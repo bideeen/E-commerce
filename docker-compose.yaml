@@ -72,11 +72,18 @@ x-airflow-common:
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- flake8==7.2.0 isort==6.0.1 requests pandas pyarrow fastparquet awswrangler}
     # The following line can be used to set a custom config file, stored in the local config folder
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
+    AWS_SHARED_CREDENTIALS_FILE: /opt/airflow/.aws/credentials
+    AWS_CONFIG_FILE: /opt/airflow/.aws/config
+    # Add AWS credentials
+    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+    AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/airflow/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/airflow/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/airflow/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/airflow/plugins:/opt/airflow/plugins
+    - ${AIRFLOW_PROJ_DIR:-.}/.aws:/opt/airflow/.aws:ro
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
